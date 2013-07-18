@@ -16,12 +16,12 @@ module CompassRails
       BOOT_FILE = 'config/boot.rb'
 
 
-      attr_reader :directory, :version
+      attr_reader :directory, :version, :asset_pipeline_enabled
 
-      def initialize(directory, version)
+      def initialize(directory, version, asset_pipeline_enabled = true)
         @directory = Pathname.new(directory)
         @version = version
-        configure_for_bundler!
+        @asset_pipeline_enabled = asset_pipeline_enabled
       end
 
       ## FILE METHODS
@@ -42,7 +42,7 @@ module CompassRails
         case version
         when RAILS_3_1, RAILS_3_2, RAILS_4_0
           return directory.join('app', 'assets', 'stylesheets', 'screen.css.scss')
-        when RAILS_2, RAILS_3
+        else
           return directory.join('app', 'assets', 'stylesheets','screen.scss')
         end
       end
@@ -63,10 +63,6 @@ module CompassRails
 
       def rails3?
         directory.join(APPLICATION_FILE).exist?
-      end
-
-      def rails2?
-        directory.join(BOOT_FILE).exist? && !directory.join(APPLICATION_FILE).exist?
       end
 
       def boots?
@@ -166,7 +162,7 @@ module CompassRails
       def bundle
         raise "NO BUNDLE FOR U"
       end
-
+      
     private
 
       ## GEM METHODS
